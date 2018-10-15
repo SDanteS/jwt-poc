@@ -1,9 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
+const expressJwt = require("express-jwt");
 const cors = require("cors");
 const app = express();
-
 const PORT = process.env.PORT || 8888;
 const users = [
   {
@@ -17,14 +17,15 @@ const users = [
     password: "guest"
   }
 ];
-app.use(cors);
+app.use(cors());
 app.use(bodyParser.json());
 
 app.get("/ressources", (req, res) => {
   res.status(200).send("public ressources, you can see this ! ");
 });
+const jwtCheck = expressJwt({ secret: "secretkey" });
 
-app.get("/ressources/secret", (req, res) => {
+app.get("/ressources/secret", jwtCheck, (req, res) => {
   res.status(200).send("you have special access if you can see this ! ");
 });
 app.get("/status", (req, res) => {
